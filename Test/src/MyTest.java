@@ -1,5 +1,5 @@
 //this is main program
-//haha
+//now we are on alpha version
 public class MyTest {
 
 	/**
