@@ -1,7 +1,9 @@
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -33,7 +35,8 @@ public class Ants {
 
     private long turnStartTime;
 
-    private final Ilk map[][];
+    //private final Ilk map[][];
+    protected final Ilk map[][];	//make it visible to PathFinder
 
     private final Set<Tile> myAnts = new HashSet<Tile>();
 
@@ -46,6 +49,9 @@ public class Ants {
     private final Set<Tile> foodTiles = new HashSet<Tile>();
 
     private final Set<Order> orders = new HashSet<Order>();
+    
+    //new property
+    private final Map<Tile, Aim> assignedAnts = new HashMap<Tile, Aim>();
 
     /**
      * Creates new {@link Ants} object.
@@ -499,5 +505,27 @@ public class Ants {
         Order order = new Order(myAnt, direction);
         orders.add(order);
         System.out.println(order);
+    }
+    
+    /*
+     * Added by me
+     * take care of only latest command/order
+     */
+    public void issuePreOrder(Tile myAnt, Aim direction){
+    	if(!assignedAnts.containsKey(myAnt)){
+    		assignedAnts.put(myAnt, direction);
+    	}else{
+    		assignedAnts.remove(myAnt);
+    		assignedAnts.put(myAnt, direction);
+    	}
+    }
+    
+    /*
+     * Issue real list of orders at one shot
+     */
+    public void issueOrders(){
+    	for(Map.Entry<Tile, Aim> assignedAnt : assignedAnts.entrySet()){
+    		issueOrder(assignedAnt.getKey(), assignedAnt.getValue());
+    	}
     }
 }
