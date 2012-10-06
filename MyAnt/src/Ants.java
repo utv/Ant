@@ -51,7 +51,7 @@ public class Ants {
     private final Set<Order> orders = new HashSet<Order>();
     
     //new property
-    private final Map<Tile, Aim> assignedAnts = new HashMap<Tile, Aim>();
+    private final Set<Tile> assignedAnts = new HashSet<Tile>();
 
     /**
      * Creates new {@link Ants} object.
@@ -448,6 +448,13 @@ public class Ants {
             }
         }
     }
+    
+    /*
+     * Clears assigned ants
+     */
+    public void clearAssignedAnts(){
+    	assignedAnts.clear();
+    }
 
     /**
      * Calculates visible information
@@ -504,28 +511,14 @@ public class Ants {
     public void issueOrder(Tile myAnt, Aim direction) {
         Order order = new Order(myAnt, direction);
         orders.add(order);
+        //add this ant to a list of assigned ants
+        assignedAnts.add(myAnt);
         System.out.println(order);
     }
     
-    /*
-     * Added by me
-     * take care of only latest command/order
-     */
-    public void issuePreOrder(Tile myAnt, Aim direction){
-    	if(!assignedAnts.containsKey(myAnt)){
-    		assignedAnts.put(myAnt, direction);
-    	}else{
-    		assignedAnts.remove(myAnt);
-    		assignedAnts.put(myAnt, direction);
-    	}
+    //Is this ant assigned/issued an order yet?
+    public boolean isAssignedAnt(Tile ant){
+    	return assignedAnts.contains(ant);
     }
     
-    /*
-     * Issue real list of orders at one shot
-     */
-    public void issueOrders(){
-    	for(Map.Entry<Tile, Aim> assignedAnt : assignedAnts.entrySet()){
-    		issueOrder(assignedAnt.getKey(), assignedAnt.getValue());
-    	}
-    }
 }
