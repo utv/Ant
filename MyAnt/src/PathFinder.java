@@ -102,10 +102,42 @@ public class PathFinder {
 		return gameManager.map[tile.getRow()][tile.getCol()].equals(Ilk.MY_ANT);
 	}
 
-	public void assignAnt2Target(Tile target){
-		Tile ant = getAnt4Target(target);
-		moveAnt2Target(ant, target);
+	public boolean assignAnt2Target(Tile target){
+
+		/*old version
+		 * 	Tile ant = getAnt4Target(target);
+			moveAnt2Target(ant, target);
+		*/
 		
+		Tile tile = null;
+		int searchCount = 0;
+		int searchDepth = 500;
+		/*
+		 * BFS here!
+		 */
+		Queue<Tile> qe = new LinkedList<Tile>();
+		HashSet<Tile> visitedTile = new HashSet<Tile>();
+		qe.add(target);
+		
+		while(!qe.isEmpty()&& searchCount < searchDepth ){		
+			tile = qe.remove();
+			
+			for(Aim direction : Aim.values()){
+				if(isPassAbleTile(tile, direction)){
+					Tile neighbor = gameManager.getTile(tile, direction);
+					if(isMyAnt(neighbor)){
+						moveAnt2Target(neighbor, tile);
+						return true;
+					}
+					if(!visitedTile.contains(neighbor)){
+						qe.add(neighbor);
+						visitedTile.add(neighbor);
+					}
+				}
+			}
+			searchCount++;
+		}
+		return false;
 	}
 
 }
