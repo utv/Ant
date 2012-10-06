@@ -23,7 +23,7 @@ public class PathFinder {
 		List<Aim> directions = gameManager.getDirections(ant, target);
 		for(Aim direction : directions){
 			if(gameManager.getIlk(ant, direction).isPassable()){
-				gameManager.issuePreOrder(ant, direction);
+				gameManager.issueOrder(ant, direction);
 				break;
 			}
 		}
@@ -104,9 +104,8 @@ public class PathFinder {
 
 	public void assignAnt2Target(Tile target){
 		Tile ant = getAnt4Target(target);
-		//if there is no ant near this food, do nothing
-		if(ant != null)
-			moveAnt2Target(ant, target);
+		moveAnt2Target(ant, target);
+		
 	}
 
 }
