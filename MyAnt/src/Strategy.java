@@ -25,33 +25,37 @@ public class Strategy {
 		this.pathFinder.gameManager = this.gameManager;
 	}
 	
-	private void simpleMove(){
+	private void moveAllAnts(){
 		//go to direction N,E,S,W in order, *always go N if passable
 		//ants = game manager
-		Ants ants = myBot.getAnts();    
+		//Ants ants = myBot.getAnts();    
 		
-		for (Tile myAnt : ants.getMyAnts()) {	//myAnt = each ant tile
-            for (Aim direction : Aim.values()) {
-                if (ants.getIlk(myAnt, direction).isPassable()) {
-                    ants.issuePreOrder(myAnt, direction);
-                    break;
-                }
+		for (Tile myAnt : gameManager.getMyAnts()) {	//myAnt = each ant tile
+			if(!gameManager.isAssignedAnt(myAnt))
+				simpleMove(myAnt);
+        }
+	}
+	
+	private void simpleMove(Tile myAnt){
+		for (Aim direction : Aim.values()) {
+            if (gameManager.getIlk(myAnt, direction).isPassable()) {
+                gameManager.issueOrder(myAnt, direction);
+                break;
             }
         }
 	}
 	
 	public void doMainStrategy(){
 		updateGameState();
-		simpleMove();
 		findFood();
-		gameManager.issueOrders();
+		moveAllAnts();
+		//gameManager.issueOrders();
 
 	}	
 	
 	private void findFood(){
-		for(Tile food : gameManager.getFoodTiles()){
+		for(Tile food : gameManager.getFoodTiles())
 			pathFinder.assignAnt2Target(food);
-		}
 	}
 
 }
