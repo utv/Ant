@@ -102,7 +102,7 @@ public class PathFinder {
 		return gameManager.map[tile.getRow()][tile.getCol()].equals(Ilk.MY_ANT);
 	}
 
-	public boolean assignAnt2Target(Tile target){
+	public void assignAnt2Target(Tile target){
 
 		/*old version
 		 * 	Tile ant = getAnt4Target(target);
@@ -127,7 +127,7 @@ public class PathFinder {
 					Tile neighbor = gameManager.getTile(tile, direction);
 					if(isMyAnt(neighbor)){
 						moveAnt2Target(neighbor, tile);
-						return true;
+						
 					}
 					if(!visitedTile.contains(neighbor)){
 						qe.add(neighbor);
@@ -137,7 +137,7 @@ public class PathFinder {
 			}
 			searchCount++;
 		}
-		return false;
+		
 	}
 
 }
