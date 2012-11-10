@@ -67,39 +67,12 @@ public class PathFinder {
 		return gameManager.getIlk(tile, direction).isPassable();
 	}
 
-	public Tile getAnt4TargetNoMap(Tile target) {
-		Tile tile = null;
-		int searchCount = 0;
-		int searchDepth = 500;
-		/*
-		 * BFS here!
-		 */
-		Queue<Tile> qe = new LinkedList<Tile>();
-		//HashSet<Tile> visitedTile = new HashSet<Tile>();
-		qe.add(target);
-		
-		while(!qe.isEmpty()&& searchCount < searchDepth ){		
-			tile = qe.remove();
-			if(isMyAnt(tile)){	//found the best ant for this food
-				//DEBUG
-				System.out.println("number of search = " + searchCount);
-				return tile;
-			}
-			for(Aim direction : Aim.values()){
-				if(isPassAbleTile(tile, direction)){
-					Tile neighbor = gameManager.getTile(tile, direction);
-					qe.add(neighbor);
-				}
-			}
-			searchCount++;
-		}
-		//DEBUG
-		System.out.println("number of search = " + searchCount);
-		return null;	//can't find any ants for this food
-	}
-
 	private boolean isMyAnt(Tile tile) {
 		return gameManager.map[tile.getRow()][tile.getCol()].equals(Ilk.MY_ANT);
+	}
+	
+	private boolean isVisibleTile(Tile tile){
+		return gameManager.isVisible(tile);
 	}
 
 	public void assignAnt2Target(Tile target){
@@ -127,7 +100,6 @@ public class PathFinder {
 					Tile neighbor = gameManager.getTile(tile, direction);
 					if(isMyAnt(neighbor)){
 						moveAnt2Target(neighbor, tile);
-						
 					}
 					if(!visitedTile.contains(neighbor)){
 						qe.add(neighbor);
@@ -137,7 +109,64 @@ public class PathFinder {
 			}
 			searchCount++;
 		}
+	}
+	
+	public void assignAnt2Target(Tile myAnt, Tile target){
+		Tile tile = null;
+		int searchCount = 0;
+		int searchDepth = 500;
+		/*
+		 * BFS here!
+		 */
+		Queue<Tile> qe = new LinkedList<Tile>();
+		HashSet<Tile> visitedTile = new HashSet<Tile>();
+		qe.add(target);
 		
+		while(!qe.isEmpty()&& searchCount < searchDepth ){		
+			tile = qe.remove();
+			
+			for(Aim direction : Aim.values()){
+				if(isPassAbleTile(tile, direction)){
+					Tile neighbor = gameManager.getTile(tile, direction);
+					if( neighbor.compareTo(myAnt) == 0 )
+						moveAnt2Target(myAnt, tile);
+					if(!visitedTile.contains(neighbor)){
+						qe.add(neighbor);
+						visitedTile.add(neighbor);
+					}
+				}
+			}
+			searchCount++;
+		}
+	}
+	
+	public Tile getInvisibleTileNearMyAnt(Tile myAnt){
+		Tile tile = null;
+		int searchCount = 0;
+		int searchDepth = 500;
+		/*
+		 * BFS here!
+		 */
+		Queue<Tile> qe = new LinkedList<Tile>();
+		HashSet<Tile> visitedTile = new HashSet<Tile>();
+		qe.add(myAnt);
+		
+		while(!qe.isEmpty()&& searchCount < searchDepth ){		
+			tile = qe.remove();
+			if(isVisibleTile(tile))
+				return tile;
+			for(Aim direction : Aim.values()){
+				if(isPassAbleTile(tile, direction)){
+					Tile neighbor = gameManager.getTile(tile, direction);
+					if(!visitedTile.contains(neighbor)){
+						qe.add(neighbor);
+						visitedTile.add(neighbor);
+					}
+				}
+			}
+			searchCount++;
+		}
+		return null;
 	}
 
 }

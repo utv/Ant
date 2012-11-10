@@ -1,3 +1,5 @@
+import java.util.List;
+
 /**
  * Represents a tile of the game map.
  */
@@ -71,4 +73,5 @@ public class Tile implements Comparable<Tile> {
     public String toString() {
         return row + " " + col;
     }
+
 }

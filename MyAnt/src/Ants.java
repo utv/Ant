@@ -36,7 +36,7 @@ public class Ants {
     private long turnStartTime;
 
     //private final Ilk map[][];
-    protected final Ilk map[][];	//make it visible to PathFinder
+    protected final Ilk map[][];	//make it visible/accessible to PathFinder
 
     private final Set<Tile> myAnts = new HashSet<Tile>();
 
@@ -52,6 +52,7 @@ public class Ants {
     
     //new property
     private final Set<Tile> assignedAnts = new HashSet<Tile>();
+    
 
     /**
      * Creates new {@link Ants} object.
@@ -66,8 +67,8 @@ public class Ants {
      * @param spawnRadius2 squared spawn radius of each ant
      */
     public Ants(int loadTime, int turnTime, int rows, int cols, int turns, int viewRadius2,
-            int attackRadius2, int spawnRadius2) {
-        this.loadTime = loadTime;
+            int attackRadius2, int spawnRadius2) {    	
+    	this.loadTime = loadTime;
         this.turnTime = turnTime;
         this.rows = rows;
         this.cols = cols;

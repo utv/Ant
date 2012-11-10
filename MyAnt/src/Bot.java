@@ -46,6 +46,8 @@ public abstract class Bot extends AbstractSystemInputParser {
         ants.clearDeadAnts();
         ants.getOrders().clear();
         ants.clearVision();
+        //add by me
+        ants.clearAssignedAnts();
     }
     
     /**
