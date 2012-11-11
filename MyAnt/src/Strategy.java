@@ -1,4 +1,6 @@
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 
@@ -7,6 +9,7 @@ public class Strategy {
 	private Ants gameManager;
 	private final PathFinder pathFinder = new PathFinder();
 	private final Set<Aim> visitedDirection = new HashSet<Aim>();	//for clockwise move order from my hill
+	private final Map<Tile, Tile> ant2TargetSet = new HashMap<Tile, Tile>();
 	
 	//private final Map<Tile, Tile> foodMap = new HashMap<Tile, Tile>(); //<food, ant>
 
@@ -63,6 +66,7 @@ public class Strategy {
 	public void doMainStrategy(){
 		updateGameState();
 		findFood();
+		explore();
 		
 	}	
 	
@@ -72,6 +76,9 @@ public class Strategy {
 				for(Tile myHill : gameManager.getMyHills() ){
 					if(myAnt.compareTo(myHill) == 0){	//my ant is on my hill
 						simpleMove(myAnt);
+					}else{
+						//my ant is not no my hill and ready to explore
+						pathFinder.assignAnt2Target( myAnt, pathFinder.getInvisibleTileNearMyAnt(myAnt) );
 					}
 				}
         }

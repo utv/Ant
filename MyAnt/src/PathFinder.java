@@ -42,7 +42,7 @@ public class PathFinder {
 		
 		while(!qe.isEmpty()&& searchCount < searchDepth ){		
 			tile = qe.remove();
-			if(isMyAnt(tile)){	//found best ant for this food
+			if(isMyAntTile(tile)){	//found best ant for this food
 				//DEBUG
 				System.out.println("number of search = " + searchCount);
 				return tile;
@@ -67,7 +67,7 @@ public class PathFinder {
 		return gameManager.getIlk(tile, direction).isPassable();
 	}
 
-	private boolean isMyAnt(Tile tile) {
+	private boolean isMyAntTile(Tile tile) {
 		return gameManager.map[tile.getRow()][tile.getCol()].equals(Ilk.MY_ANT);
 	}
 	
@@ -75,7 +75,7 @@ public class PathFinder {
 		return gameManager.isVisible(tile);
 	}
 
-	public void assignAnt2Target(Tile target){
+	public boolean assignAnt2Target(Tile target){
 
 		/*old version
 		 * 	Tile ant = getAnt4Target(target);
@@ -93,13 +93,15 @@ public class PathFinder {
 		qe.add(target);
 		
 		while(!qe.isEmpty()&& searchCount < searchDepth ){		
+		//while(!qe.isEmpty() ){	
 			tile = qe.remove();
 			
 			for(Aim direction : Aim.values()){
 				if(isPassAbleTile(tile, direction)){
 					Tile neighbor = gameManager.getTile(tile, direction);
-					if(isMyAnt(neighbor)){
+					if(isMyAntTile(neighbor)){
 						moveAnt2Target(neighbor, tile);
+						return true;
 					}
 					if(!visitedTile.contains(neighbor)){
 						qe.add(neighbor);
@@ -109,9 +111,10 @@ public class PathFinder {
 			}
 			searchCount++;
 		}
+		return false;
 	}
 	
-	public void assignAnt2Target(Tile myAnt, Tile target){
+	public boolean assignAnt2Target(Tile myAnt, Tile target){
 		Tile tile = null;
 		int searchCount = 0;
 		int searchDepth = 500;
@@ -128,8 +131,11 @@ public class PathFinder {
 			for(Aim direction : Aim.values()){
 				if(isPassAbleTile(tile, direction)){
 					Tile neighbor = gameManager.getTile(tile, direction);
-					if( neighbor.compareTo(myAnt) == 0 )
+					if( neighbor.compareTo(myAnt) == 0 ){
 						moveAnt2Target(myAnt, tile);
+						return true;
+					}
+						
 					if(!visitedTile.contains(neighbor)){
 						qe.add(neighbor);
 						visitedTile.add(neighbor);
@@ -138,6 +144,7 @@ public class PathFinder {
 			}
 			searchCount++;
 		}
+		return false;
 	}
 	
 	public Tile getInvisibleTileNearMyAnt(Tile myAnt){
