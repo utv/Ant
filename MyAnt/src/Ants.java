@@ -51,7 +51,8 @@ public class Ants {
     private final Set<Order> orders = new HashSet<Order>();
     
     //new property
-    private final Set<Tile> assignedAnts = new HashSet<Tile>();
+    private final Set<Tile> ant2FoodSet = new HashSet<Tile>();					//ants for food
+    private final Map<Tile, Tile> ant2TargetMap = new HashMap<Tile, Tile>();	//store ants and their targets except food
     
 
     /**
@@ -449,13 +450,6 @@ public class Ants {
             }
         }
     }
-    
-    /*
-     * Clears assigned ants
-     */
-    public void clearAssignedAnts(){
-    	assignedAnts.clear();
-    }
 
     /**
      * Calculates visible information
@@ -512,14 +506,44 @@ public class Ants {
     public void issueOrder(Tile myAnt, Aim direction) {
         Order order = new Order(myAnt, direction);
         orders.add(order);
-        //add this ant to a list of assigned ants
-        assignedAnts.add(myAnt);
+        //add this ant to a list of assigned ants -- use map instead of set
+        //assignedAnts.add(myAnt);
         System.out.println(order);
     }
     
-    //Is this ant assigned/issued an order yet?
+    /*
+     * Methods for ant2TargetMap
+     */
+    public Map getAnt2Targets(){
+    	return ant2TargetMap;
+    }
+    
+    public void setAnt2Target(Tile ant, Tile target){
+    	ant2TargetMap.put(ant, target);
+    }
+    
+    public void clearAnt2Target(){
+    	ant2TargetMap.clear();
+    }
+    
     public boolean isAssignedAnt(Tile ant){
-    	return assignedAnts.contains(ant);
+    	if( ant2FoodSet.contains(ant) )
+    		return true;
+    	else if( ant2TargetMap.containsKey(ant) )
+    		return true;
+    	else
+    		return false;
+    }
+    
+    /*
+     * ant2FoodSet
+     */
+    public void setAnt2Food(Tile ant){
+    	ant2FoodSet.add(ant);
+    }
+    
+    public void clearAnt2Food(){
+    	ant2FoodSet.clear();
     }
     
 }

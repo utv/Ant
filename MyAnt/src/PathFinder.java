@@ -1,6 +1,8 @@
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Queue;
 
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -15,15 +17,17 @@ public class PathFinder {
 	public PathFinder(){
 		
 	}
-
+	
 	/*
-	 * Move ant to any kinds of tile we want
+	 * Move ant to any kinds of adjacent tile we want
 	 */
 	private void moveAnt2Target(Tile ant, Tile target){
+		
 		List<Aim> directions = gameManager.getDirections(ant, target);
 		for(Aim direction : directions){
 			if(gameManager.getIlk(ant, direction).isPassable()){
 				gameManager.issueOrder(ant, direction);
+				//gameManager.setAnt2Target(ant, target);
 				break;
 			}
 		}
@@ -75,7 +79,16 @@ public class PathFinder {
 		return gameManager.isVisible(tile);
 	}
 
-	public boolean assignAnt2Target(Tile target){
+	public boolean assignAnt2Food(Tile food){
+		Tile ant = assignAnt2Target(food);
+		if( ant != null){
+			gameManager.setAnt2Food(ant);
+			return true;
+		}else
+			return false;
+	}
+	
+	public Tile assignAnt2Target(Tile target){
 
 		/*old version
 		 * 	Tile ant = getAnt4Target(target);
@@ -101,7 +114,7 @@ public class PathFinder {
 					Tile neighbor = gameManager.getTile(tile, direction);
 					if(isMyAntTile(neighbor)){
 						moveAnt2Target(neighbor, tile);
-						return true;
+						return neighbor;
 					}
 					if(!visitedTile.contains(neighbor)){
 						qe.add(neighbor);
@@ -111,7 +124,7 @@ public class PathFinder {
 			}
 			searchCount++;
 		}
-		return false;
+		return null;
 	}
 	
 	public boolean assignAnt2Target(Tile myAnt, Tile target){
@@ -147,7 +160,7 @@ public class PathFinder {
 		return false;
 	}
 	
-	public Tile getInvisibleTileNearMyAnt(Tile myAnt){
+	public Tile getUnseenTileNearMyAnt(Tile myAnt){
 		Tile tile = null;
 		int searchCount = 0;
 		int searchDepth = 500;
@@ -160,7 +173,7 @@ public class PathFinder {
 		
 		while(!qe.isEmpty()&& searchCount < searchDepth ){		
 			tile = qe.remove();
-			if(isVisibleTile(tile))
+			if(isVisibleTile(tile) == false)
 				return tile;
 			for(Aim direction : Aim.values()){
 				if(isPassAbleTile(tile, direction)){
@@ -174,6 +187,18 @@ public class PathFinder {
 			searchCount++;
 		}
 		return null;
+	}
+	
+	public Tile moveAnt2UnseenTile(Tile myAnt) {
+		Tile target = getUnseenTileNearMyAnt(myAnt);
+		assignAnt2Target( myAnt, target );
+		return target;
+	}
+	
+	public void assignAnt2UnseenTile(Tile myAnt) {
+		Tile target = getUnseenTileNearMyAnt(myAnt);
+		assignAnt2Target( myAnt, target );
+		gameManager.setAnt2Target(myAnt, target);
 	}
 
 }

@@ -1,13 +1,19 @@
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Starter bot implementation.
  */
 public class MyBot extends Bot {
     private Strategy strategy;	//my stategy
+    private static AntLogger logger;
 	
     public MyBot(){
-    	strategy = new Strategy(this);
+    	logger = new AntLogger();
+    	strategy = new Strategy(this, logger);
+    	
     }
 	/**
      * Main method executed by the game engine for starting the bot.
@@ -18,6 +24,7 @@ public class MyBot extends Bot {
      */
     public static void main(String[] args) throws IOException {    
     	new MyBot().readSystemInput();
+    	
     }
     
     /**
