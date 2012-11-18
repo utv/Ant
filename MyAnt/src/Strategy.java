@@ -68,6 +68,8 @@ public class Strategy {
 		findFood();
 		explore();
 		
+		logger.debug("+++++++++++++++++ number of ants = " + gameManager.getMyAnts().size() );
+		logger.debug("+++++++++++++++++ number of ants for unseen tile = " + gameManager.getAnt2Targets().size() );
 	}	
 	
 	private void explore() {
@@ -86,21 +88,21 @@ public class Strategy {
 
 	private void eachAntExplore(Tile myAnt) {
 		//my ant is not no my hill and not assigned to any target
-		if( gameManager.getAnt2Targets().containsKey(myAnt) == false ){
+		if( ! gameManager.getAnt2Targets().containsKey(myAnt) ){
 			//pathFinder.assignAnt2UnseenTile(myAnt);
-			Tile target = pathFinder.moveAnt2UnseenTile(myAnt);
-			gameManager.setAnt2Target(myAnt, target);
 			
-			logger.debug("eachAntExplore:: assigns unseen tile to ant row = " + 
-			myAnt.getRow() + "col = " + myAnt.getCol() + " to tile row = " + target.getRow() + ", col = " + target.getCol() );
+			pathFinder.moveAnt2UnseenTile(myAnt);
+			
+			/*logger.debug("eachAntExplore:: assigns unseen tile to ant row = " + 
+			myAnt.getRow() + "col = " + myAnt.getCol() + " to tile row = " + target.getRow() + ", col = " + target.getCol() );*/
 		}else{
 		//already assigned
 			logger.debug("eachAntExplore::assigned:++++++++++++");
 			if( myAnt.compareTo((Tile) gameManager.getAnt2Targets().get(myAnt)) == 0  ){
 				//ant reaches its target
 				gameManager.getAnt2Targets().remove(myAnt);
-				Tile target = pathFinder.moveAnt2UnseenTile(myAnt);
-				gameManager.setAnt2Target(myAnt, target);
+				pathFinder.moveAnt2UnseenTile(myAnt);
+				
 				logger.debug("eachAntExplore:: reached the target");
 			}else{
 				//ant hasn't reached its target, then go to the target
