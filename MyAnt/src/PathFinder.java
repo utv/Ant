@@ -168,6 +168,39 @@ public class PathFinder {
 		return false;
 	}
 	
+	public boolean assignAnt2TargetNoLimit(Tile myAnt, Tile target){
+		Tile tile = null;
+		/*int searchCount = 0;
+		int searchDepth = 500;*/
+		/*
+		 * BFS here!
+		 */
+		Queue<Tile> qe = new LinkedList<Tile>();
+		HashSet<Tile> visitedTile = new HashSet<Tile>();
+		qe.add(target);
+		
+		while(!qe.isEmpty() ){		
+			tile = qe.remove();
+			
+			for(Aim direction : Aim.values()){
+				if(isPassAbleTile(tile, direction)){
+					Tile neighbor = gameManager.getTile(tile, direction);
+					if( neighbor.compareTo(myAnt) == 0 ){
+						takeAStep(myAnt, tile);
+						//gameManager.setAnt2TargetMap(tile, target);
+						return true;
+					}
+						
+					if(!visitedTile.contains(neighbor)){
+						qe.add(neighbor);
+						visitedTile.add(neighbor);
+					}
+				}
+			}
+		}
+		return false;
+	}
+	
 	/*public Tile getStepTile2Target(Tile myAnt, Tile target){
 		Tile tile = null;
 		int searchCount = 0;
@@ -242,7 +275,7 @@ public class PathFinder {
 		//gameManager.setAnt2TargetMap(myAnt, target);
 	}*/
 
-	public void exploreByLastSeenTile(Tile myAnt, Tile lastSeen) {
+	public boolean exploreByLastSeenTile(Tile myAnt, Tile lastSeen) {
 		//BFS to find invisible tile
 		Tile tile = null;
 		int searchCount = 0;
@@ -259,6 +292,7 @@ public class PathFinder {
 			if( ! isVisibleTile(tile) ){
 				//if( isOnUnseenPath(tile, myAnt, lastSeen) )
 					assignAnt2Target(myAnt, tile);
+					return true;
 			}
 			for(Aim direction : Aim.values()){
 				if(isPassAbleTile(tile, direction)){
@@ -271,6 +305,7 @@ public class PathFinder {
 			}
 			searchCount++;
 		}
+		return false;
 	}
 
 	private boolean isOnUnseenPath(Tile unSeen, Tile myAnt, Tile lastSeen) {

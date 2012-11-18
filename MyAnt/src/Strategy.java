@@ -27,7 +27,7 @@ public class Strategy {
 		this.pathFinder.gameManager = this.gameManager;
 	}
 	
-	private void moveAllAnts(){
+	/*private void moveAllAnts(){
 		//go to direction N,E,S,W in order, *always go N if passable
 		//ants = game manager
 		//Ants ants = myBot.getAnts();    
@@ -46,7 +46,7 @@ public class Strategy {
                 break;
             }
         }
-    }
+    }*/
 	
 	
 	private void simpleMove(Tile myAnt){
@@ -69,39 +69,50 @@ public class Strategy {
 		findFood();
 		explore();
 		
-		//turn++;
+		turn++;
 		//logger.debug("----------------------- turn " + turn + "");
 		//logger.debug("+++++++++++++++++ number of ants = " + gameManager.getMyAnts().size() );
 		//logger.debug("+++++++++++++++++ number of ants for unseen tile = " + gameManager.getAnt2Targets().size() );
 	}	
 	
 	private void explore() {
-		for (Tile myAnt : gameManager.getMyAnts()) {	//myAnt = each ant tile
-			
-				for(Tile myHill : gameManager.getMyHills() ){
-					if(myAnt.compareTo(myHill) == 0){	//my ant is on my hill
-						simpleMove(myAnt);
-					}else{
-						eachAntExplore(myAnt);
-					}
+		for (Tile myAnt : gameManager.getMyAnts()) {	
+			for(Tile myHill : gameManager.getMyHills() ){
+				if(myAnt.compareTo(myHill) == 0){	//ant is on my hill
+					simpleMove(myAnt);
+				}else{
+					if( !eachAntExplore(myAnt) )
+						followAntNearBy(myAnt);
 				}
-			
+			}
         }
 	}
 
-	private void eachAntExplore(Tile myAnt) {
-		for(Aim direction : Aim.values()){
-			Tile lastSeen = gameManager.getTile(myAnt, direction);
-			if( gameManager.getLastSeenAnts().contains( lastSeen ) ){
-				pathFinder.exploreByLastSeenTile(myAnt, lastSeen);
+	private void followAntNearBy(Tile myAnt) {
+		int mininumDistance = 20;
+		for(Tile friend : gameManager.getMyAnts()){
+			if( gameManager.getDistance(myAnt, friend) > mininumDistance ){
+				if( pathFinder.assignAnt2TargetNoLimit(myAnt, friend) == false )
+					logger.debug("*********** Can't find any friends **********");
 				break;
 			}
 		}
 	}
 
-
+	private boolean eachAntExplore(Tile myAnt) {
+		for(Aim direction : Aim.values()){
+			Tile lastSeen = gameManager.getTile(myAnt, direction);
+			if( gameManager.getLastSeenAnts().contains( lastSeen ) ){
+				return pathFinder.exploreByLastSeenTile(myAnt, lastSeen);
+				//break;
+			}
+		}
+		return false;
+	}
 
 	private void findFood(){
+		if(gameManager.getFoodTiles().isEmpty())
+			logger.debug("turn="+ turn +", No food at all");
 		for(Tile food : gameManager.getFoodTiles())
 			//pathFinder.assignAnt2Food(food);
 			pathFinder.assignAnt2Target(food);
