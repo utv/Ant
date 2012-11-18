@@ -38,6 +38,9 @@ public abstract class Bot extends AbstractSystemInputParser {
     @Override
     public void beforeUpdate() {
         ants.setTurnStartTime(System.currentTimeMillis());
+        
+        ants.setNewLastSeenAnts(ants.getMyAnts());			//add last seen ants to a set
+        
         ants.clearMyAnts();
         ants.clearEnemyAnts();
         ants.clearMyHills();

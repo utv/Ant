@@ -39,6 +39,9 @@ public class Ants {
     protected final Ilk map[][];	//make it visible/accessible to PathFinder
 
     private final Set<Tile> myAnts = new HashSet<Tile>();
+    
+    // ant from last turn
+    private final Set<Tile> lastSeenAnts = new HashSet<Tile>();
 
     private final Set<Tile> enemyAnts = new HashSet<Tile>();
 
@@ -52,7 +55,7 @@ public class Ants {
     
     //new property
     //private final Set<Tile> ant2FoodSet = new HashSet<Tile>();					//ants for food
-    private final Map<Tile, Tile> ant2TargetMap = new HashMap<Tile, Tile>();	//store ants and their targets except food
+    //private final Map<Tile, Tile> ant2TargetMap = new HashMap<Tile, Tile>();	//store ants and their targets except food
     
 
     /**
@@ -514,7 +517,7 @@ public class Ants {
     /*
      * Methods for ant2TargetMap
      */
-    public Map getAnt2Targets(){
+    /*public Map getAnt2Targets(){
     	return ant2TargetMap;
     }
     
@@ -527,12 +530,29 @@ public class Ants {
     }
     
     public boolean isAssignedAnt(Tile ant){
-    	/*if( ant2FoodSet.contains(ant) )
-    		return true;*/
+    	if( ant2FoodSet.contains(ant) )
+    		return true;
     	if( ant2TargetMap.containsKey(ant) || orders.contains(ant))
     		return true;
     	else
     		return false;
+    }*/
+    
+    /*
+     * last seen ants
+     */
+    
+    public Set<Tile> getLastSeenAnts(){
+    	return lastSeenAnts;
+    }
+    
+    public void clearLastSeenAnts(){
+    	lastSeenAnts.clear();
+    }
+    
+    public void setNewLastSeenAnts(Set<Tile> ants){
+    	lastSeenAnts.clear();
+    	lastSeenAnts.addAll(ants);
     }
     
     /*

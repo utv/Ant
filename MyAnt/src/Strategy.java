@@ -10,6 +10,7 @@ public class Strategy {
 	private final PathFinder pathFinder = new PathFinder();
 	private final Set<Aim> visitedDirection = new HashSet<Aim>();	//for clockwise move order from my hill
 	private final AntLogger logger;
+	private int turn = 0;
 	//private final Map<Tile, Tile> foodMap = new HashMap<Tile, Tile>(); //<food, ant>
 
 	public Strategy(MyBot myBott, AntLogger antlog){
@@ -32,7 +33,7 @@ public class Strategy {
 		//Ants ants = myBot.getAnts();    
 		
 		for (Tile myAnt : gameManager.getMyAnts()) {	//myAnt = each ant tile
-			if(!gameManager.isAssignedAnt(myAnt))	
+			//if(!gameManager.isAssignedAnt(myAnt))	
 				simpleBasicMove(myAnt);
 				//simpleMove(myAnt);
         }
@@ -68,13 +69,15 @@ public class Strategy {
 		findFood();
 		explore();
 		
-		logger.debug("+++++++++++++++++ number of ants = " + gameManager.getMyAnts().size() );
-		logger.debug("+++++++++++++++++ number of ants for unseen tile = " + gameManager.getAnt2Targets().size() );
+		//turn++;
+		//logger.debug("----------------------- turn " + turn + "");
+		//logger.debug("+++++++++++++++++ number of ants = " + gameManager.getMyAnts().size() );
+		//logger.debug("+++++++++++++++++ number of ants for unseen tile = " + gameManager.getAnt2Targets().size() );
 	}	
 	
 	private void explore() {
 		for (Tile myAnt : gameManager.getMyAnts()) {	//myAnt = each ant tile
-			if(!gameManager.isAssignedAnt(myAnt)){
+			
 				for(Tile myHill : gameManager.getMyHills() ){
 					if(myAnt.compareTo(myHill) == 0){	//my ant is on my hill
 						simpleMove(myAnt);
@@ -82,32 +85,16 @@ public class Strategy {
 						eachAntExplore(myAnt);
 					}
 				}
-			}
+			
         }
 	}
 
 	private void eachAntExplore(Tile myAnt) {
-		//my ant is not no my hill and not assigned to any target
-		if( ! gameManager.getAnt2Targets().containsKey(myAnt) ){
-			//pathFinder.assignAnt2UnseenTile(myAnt);
-			
-			pathFinder.moveAnt2UnseenTile(myAnt);
-			
-			/*logger.debug("eachAntExplore:: assigns unseen tile to ant row = " + 
-			myAnt.getRow() + "col = " + myAnt.getCol() + " to tile row = " + target.getRow() + ", col = " + target.getCol() );*/
-		}else{
-		//already assigned
-			logger.debug("eachAntExplore::assigned:++++++++++++");
-			if( myAnt.compareTo((Tile) gameManager.getAnt2Targets().get(myAnt)) == 0  ){
-				//ant reaches its target
-				gameManager.getAnt2Targets().remove(myAnt);
-				pathFinder.moveAnt2UnseenTile(myAnt);
-				
-				logger.debug("eachAntExplore:: reached the target");
-			}else{
-				//ant hasn't reached its target, then go to the target
-				pathFinder.moveAnt2UnseenTile(myAnt);
-				logger.debug("eachAntExplore:: keep going to the target");
+		for(Aim direction : Aim.values()){
+			Tile lastSeen = gameManager.getTile(myAnt, direction);
+			if( gameManager.getLastSeenAnts().contains( lastSeen ) ){
+				pathFinder.exploreByLastSeenTile(myAnt, lastSeen);
+				break;
 			}
 		}
 	}
@@ -116,7 +103,8 @@ public class Strategy {
 
 	private void findFood(){
 		for(Tile food : gameManager.getFoodTiles())
-			pathFinder.assignAnt2Food(food);
+			//pathFinder.assignAnt2Food(food);
+			pathFinder.assignAnt2Target(food);
 	}
 
 }
