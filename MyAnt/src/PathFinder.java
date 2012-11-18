@@ -78,19 +78,6 @@ public class PathFinder {
 	private boolean isVisibleTile(Tile tile){
 		return gameManager.isVisible(tile);
 	}
-
-	/*public boolean assignAnt2Food(Tile food){
-		
-		Tile ant = assignAnt2Target(food);
-		if( ant != null){
-			//gameManager.setAnt2Food(ant);
-			if( gameManager.getAnt2Targets().containsKey(ant) )
-				gameManager.getAnt2Targets().remove(ant);
-			
-			return true;
-		}else
-			return false;
-	}*/
 	
 	/*
 	 * Use BFS to move a closest ant from the target one step towards the target, then return it.
@@ -201,79 +188,7 @@ public class PathFinder {
 		return false;
 	}
 	
-	/*public Tile getStepTile2Target(Tile myAnt, Tile target){
-		Tile tile = null;
-		int searchCount = 0;
-		int searchDepth = 500;
-		
-		 * BFS here!
-		 
-		Queue<Tile> qe = new LinkedList<Tile>();
-		HashSet<Tile> visitedTile = new HashSet<Tile>();
-		qe.add(target);
-		
-		while(!qe.isEmpty()&& searchCount < searchDepth ){		
-			tile = qe.remove();
-			
-			for(Aim direction : Aim.values()){
-				if(isPassAbleTile(tile, direction)){
-					Tile neighbor = gameManager.getTile(tile, direction);
-					if( neighbor.compareTo(myAnt) == 0 ){
-						//takeAStep(myAnt, tile);
-						return tile;
-					}
-						
-					if(!visitedTile.contains(neighbor)){
-						qe.add(neighbor);
-						visitedTile.add(neighbor);
-					}
-				}
-			}
-			searchCount++;
-		}
-		return null;
-	}*/
 	
-	/*public Tile getUnseenTileNearMyAnt(Tile myAnt){
-		Tile tile = null;
-		int searchCount = 0;
-		int searchDepth = 500;
-		
-		 * BFS here!
-		 
-		Queue<Tile> qe = new LinkedList<Tile>();
-		HashSet<Tile> visitedTile = new HashSet<Tile>();
-		qe.add(myAnt);
-		
-		while(!qe.isEmpty()&& searchCount < searchDepth ){		
-			tile = qe.remove();
-			if(isVisibleTile(tile) == false)
-				return tile;
-			for(Aim direction : Aim.values()){
-				if(isPassAbleTile(tile, direction)){
-					Tile neighbor = gameManager.getTile(tile, direction);
-					if(!visitedTile.contains(neighbor)){
-						qe.add(neighbor);
-						visitedTile.add(neighbor);
-					}
-				}
-			}
-			searchCount++;
-		}
-		return null;
-	}*/
-	
-	/*public Tile moveAnt2UnseenTile(Tile myAnt) {
-		Tile target = getUnseenTileNearMyAnt(myAnt);
-		assignAnt2Target( myAnt, target );
-		return target;
-	}*/
-	
-	/*public void assignAnt2UnseenTile(Tile myAnt) {
-		Tile target = getUnseenTileNearMyAnt(myAnt);
-		assignAnt2Target( myAnt, target );
-		//gameManager.setAnt2TargetMap(myAnt, target);
-	}*/
 
 	public boolean exploreByLastSeenTile(Tile myAnt, Tile lastSeen) {
 		//BFS to find invisible tile

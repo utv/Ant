@@ -27,28 +27,6 @@ public class Strategy {
 		this.pathFinder.gameManager = this.gameManager;
 	}
 	
-	/*private void moveAllAnts(){
-		//go to direction N,E,S,W in order, *always go N if passable
-		//ants = game manager
-		//Ants ants = myBot.getAnts();    
-		
-		for (Tile myAnt : gameManager.getMyAnts()) {	//myAnt = each ant tile
-			//if(!gameManager.isAssignedAnt(myAnt))	
-				simpleBasicMove(myAnt);
-				//simpleMove(myAnt);
-        }
-	}
-	
-	private void simpleBasicMove(Tile myAnt){
-		for (Aim direction : Aim.values()) {
-        	if (gameManager.getIlk(myAnt, direction).isPassable()) {
-                gameManager.issueOrder(myAnt, direction);
-                break;
-            }
-        }
-    }*/
-	
-	
 	private void simpleMove(Tile myAnt){
 		if(visitedDirection.size() == Aim.values().length)
         	visitedDirection.clear();
