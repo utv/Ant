@@ -9,17 +9,13 @@ public class Strategy {
 	private Ants gameManager;
 	private final PathFinder pathFinder = new PathFinder();
 	private final Set<Aim> visitedDirection = new HashSet<Aim>();	//for clockwise move order from my hill
-	//private final AntLogger logger;
+	private final AntLogger logger;
 	private int turn = 0;
 	//private final Map<Tile, Tile> foodMap = new HashMap<Tile, Tile>(); //<food, ant>
-
-	/*public Strategy(MyBot myBott, AntLogger antlog){
+	
+	public Strategy(MyBot myBott, AntLogger antlog){
 		this.myBot = myBott;
 		logger = antlog;
-	}*/
-	
-	public Strategy(MyBot myBott){
-		this.myBot = myBott;
 	}
 	
 	/*
@@ -66,12 +62,14 @@ public class Strategy {
 
 	private void explore() {
 		for ( Tile myAnt : gameManager.getMyAnts() ) {	
-			for( Tile myHill : gameManager.getMyHills() ){
-				if( myAnt.compareTo(myHill) == 0 ){	//ant is on my hill
-					simpleMove(myAnt);
-				}else{
-					if( !eachAntExplore(myAnt) )
-						followAntNearBy(myAnt);			//nothing new ahead then go join a friend near by	
+			if( gameManager.isNotAssignedAnt(myAnt) ){
+				for( Tile myHill : gameManager.getMyHills() ){
+					if( myAnt.compareTo(myHill) == 0 ){	//ant is on my hill
+						simpleMove(myAnt);
+					}else{
+						if( !eachAntExplore(myAnt) )
+							followAntNearBy(myAnt);			//nothing new ahead then go join a friend near by	
+					}
 				}
 			}
 		}
@@ -97,7 +95,8 @@ public class Strategy {
 		for(Aim direction : Aim.values()){
 			Tile lastSeen = gameManager.getTile(myAnt, direction);
 			if( gameManager.getLastSeenAnts().contains( lastSeen ) ){
-				return pathFinder.exploreByLastSeenTile(myAnt, lastSeen);
+				pathFinder.exploreByLastSeenTile(myAnt, lastSeen);
+					return true;
 				//break;
 			}
 		}
@@ -105,11 +104,6 @@ public class Strategy {
 	}
 
 	private void findFood(){
-		if(gameManager.getFoodTiles().isEmpty()){
-			explore();			
-			//logger.debug("turn="+ turn +", No food at all");
-		}
-			
 		for(Tile food : gameManager.getFoodTiles())
 			//pathFinder.assignAnt2Food(food);
 			pathFinder.assignTarget2Ant(food);

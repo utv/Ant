@@ -12,7 +12,7 @@ import javax.swing.tree.TreeNode;
 public class PathFinder {
 
 	protected Ants gameManager;
-	private final int SEARCH_LIMIT = 100;
+	private final int SEARCH_LIMIT = 1000;
 	
 	public PathFinder(){
 		
@@ -230,7 +230,8 @@ public class PathFinder {
 		//BFS to find invisible tile
 		Tile tile = null;
 		int searchCount = 0;
-		int searchDepth = SEARCH_LIMIT;
+		int searchDepth = 1000;
+		int maxLastSeenTileCount = 800;
 		/*
 		 * BFS here!
 		 */
@@ -248,10 +249,17 @@ public class PathFinder {
 			for(Aim direction : Aim.values()){
 				if(isPassAbleTile(tile, direction)){
 					Tile neighbor = gameManager.getTile(tile, direction);
-					if( !visitedTile.contains(neighbor) && isOnUnseenPath(neighbor, myAnt, lastSeen)){
-						qe.add(neighbor);
-						visitedTile.add(neighbor);
-					}
+					
+					if( searchCount <  maxLastSeenTileCount )
+						if( !visitedTile.contains(neighbor) && isOnUnseenPath(neighbor, myAnt, lastSeen)){
+							qe.add(neighbor);
+							visitedTile.add(neighbor);
+						}
+					else
+						if( !visitedTile.contains(neighbor) ){
+							qe.add(neighbor);
+							visitedTile.add(neighbor);
+						}
 				}
 			}
 			searchCount++;
@@ -273,6 +281,39 @@ public class PathFinder {
 				return true;
 		}
 		
+		return false;
+	}
+
+	public boolean followFriendByLastSeenTile(Tile myAnt, Tile lastSeen) {
+		//BFS to find invisible tile
+		Tile tile = null;
+		int searchCount = 0;
+		int searchDepth = SEARCH_LIMIT;
+		/*
+		 * BFS here!
+		 */
+		Queue<Tile> qe = new LinkedList<Tile>();
+		HashSet<Tile> visitedTile = new HashSet<Tile>();
+		qe.add(myAnt);
+		
+		while(!qe.isEmpty()&& searchCount < searchDepth ){		
+			tile = qe.remove();
+			if( isMyAntTile(tile) ){
+				//if( isOnUnseenPath(tile, myAnt, lastSeen) )
+					assignAnt2Target(myAnt, tile);
+					return true;
+			}
+			for(Aim direction : Aim.values()){
+				if(isPassAbleTile(tile, direction)){
+					Tile neighbor = gameManager.getTile(tile, direction);
+					if( !visitedTile.contains(neighbor) && isOnUnseenPath(neighbor, myAnt, lastSeen)){
+						qe.add(neighbor);
+						visitedTile.add(neighbor);
+					}
+				}
+			}
+			searchCount++;
+		}
 		return false;
 	}
 

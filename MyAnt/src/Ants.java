@@ -512,8 +512,7 @@ public class Ants {
         Order order = new Order(myAnt, direction);
         orders.add(order);
         //add this ant to a list of assigned ants -- use map instead of set
-        //assignedAnts.add(myAnt);
-        //myAnts.remove(myAnt);
+        assignedAnts.add(myAnt);
         nextTurnAnts.add( getTile(myAnt, direction) );
         System.out.println(order);
     }
@@ -521,13 +520,19 @@ public class Ants {
     /*
      * AssignedAnts
      */
-    /*public boolean isAssignedAnt(Tile myAnt){
+    public boolean isAssignedAnt(Tile myAnt){
     	return assignedAnts.contains(myAnt);
+    }
+    
+    public boolean isNotAssignedAnt(Tile myAnt){
+    	if( assignedAnts.contains(myAnt) )
+    		return false;
+    	return true;
     }
     
     public void clearAssignedAnts(){
     	assignedAnts.clear();
-    }*/
+    }
     
     
     //nextTurnAnts
