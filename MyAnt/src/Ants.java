@@ -54,6 +54,8 @@ public class Ants {
     private final Set<Order> orders = new HashSet<Order>();
     
     //new property
+    private final Set<Tile> assignedAnts = new HashSet<Tile>();
+    private final Set<Tile> nextTurnAnts = new HashSet<Tile>();
     //private final Set<Tile> ant2FoodSet = new HashSet<Tile>();					//ants for food
     //private final Map<Tile, Tile> ant2TargetMap = new HashMap<Tile, Tile>();	//store ants and their targets except food
     
@@ -511,7 +513,38 @@ public class Ants {
         orders.add(order);
         //add this ant to a list of assigned ants -- use map instead of set
         //assignedAnts.add(myAnt);
+        //myAnts.remove(myAnt);
+        nextTurnAnts.add( getTile(myAnt, direction) );
         System.out.println(order);
+    }
+    
+    /*
+     * AssignedAnts
+     */
+    /*public boolean isAssignedAnt(Tile myAnt){
+    	return assignedAnts.contains(myAnt);
+    }
+    
+    public void clearAssignedAnts(){
+    	assignedAnts.clear();
+    }*/
+    
+    
+    //nextTurnAnts
+    
+    public boolean isNextTurnAnts(Tile myAnt){
+    	return nextTurnAnts.contains(myAnt);
+    }
+    
+    public boolean isNotNextTurnAnts(Tile myAnt){
+    	if( nextTurnAnts.contains(myAnt) ) 
+    		return false;
+    	return true;
+    }
+    
+    
+    public void clearNextTurnAnts(){
+    	nextTurnAnts.clear();
     }
     
     /*

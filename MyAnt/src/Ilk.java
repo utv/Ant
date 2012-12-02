@@ -26,7 +26,7 @@ public enum Ilk {
      * @return <code>true</code> if this is not a water tile, <code>false</code> otherwise
      */
     public boolean isPassable() {
-        return ordinal() > WATER.ordinal();
+        return ( ordinal() > WATER.ordinal() );
     }
     
     /**
@@ -37,5 +37,9 @@ public enum Ilk {
      */
     public boolean isUnoccupied() {
         return this == LAND || this == DEAD;
+    }
+    
+    public boolean isMyAnt() {
+    	return this == MY_ANT;
     }
 }

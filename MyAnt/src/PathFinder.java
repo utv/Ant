@@ -12,7 +12,7 @@ import javax.swing.tree.TreeNode;
 public class PathFinder {
 
 	protected Ants gameManager;
-	
+	private final int SEARCH_LIMIT = 100;
 	
 	public PathFinder(){
 		
@@ -21,7 +21,7 @@ public class PathFinder {
 	/*
 	 * Move ant to any kinds of adjacent tile we want
 	 */
-	private void takeAStep(Tile ant, Tile target){
+	public void takeAStep(Tile ant, Tile target){
 		
 		List<Aim> directions = gameManager.getDirections(ant, target);
 		for(Aim direction : directions){
@@ -36,7 +36,7 @@ public class PathFinder {
 	public Tile getAnt4Target(Tile target) {
 		Tile tile = null;
 		int searchCount = 0;
-		int searchDepth = 500;
+		int searchDepth = SEARCH_LIMIT;
 		/*
 		 * BFS here!
 		 */
@@ -68,7 +68,9 @@ public class PathFinder {
 	}
 	
 	private boolean isPassAbleTile(Tile tile, Aim direction) {
-		return gameManager.getIlk(tile, direction).isPassable();
+		return ( gameManager.getIlk(tile, direction).isPassable() 
+				&& gameManager.isNotNextTurnAnts( gameManager.getTile(tile, direction) ) 
+				);
 	}
 
 	private boolean isMyAntTile(Tile tile) {
@@ -82,7 +84,7 @@ public class PathFinder {
 	/*
 	 * Use BFS to move a closest ant from the target one step towards the target, then return it.
 	 */
-	public Tile assignAnt2Target(Tile target){
+	public Tile assignTarget2Ant(Tile target){
 
 		/*old version
 		 * 	Tile ant = getAnt4Target(target);
@@ -91,7 +93,7 @@ public class PathFinder {
 		
 		Tile tile = null;
 		int searchCount = 0;
-		int searchDepth = 500;
+		int searchDepth = SEARCH_LIMIT;
 		/*
 		 * BFS here!
 		 */
@@ -124,7 +126,41 @@ public class PathFinder {
 	public boolean assignAnt2Target(Tile myAnt, Tile target){
 		Tile tile = null;
 		int searchCount = 0;
-		int searchDepth = 500;
+		int searchDepth = SEARCH_LIMIT;
+		/*
+		 * BFS here!
+		 */
+		Queue<Tile> qe = new LinkedList<Tile>();
+		HashSet<Tile> visitedTile = new HashSet<Tile>();
+		qe.add(target);
+		
+		while(!qe.isEmpty()&& searchCount < searchDepth ){		
+			tile = qe.remove();
+			
+			for(Aim direction : Aim.values()){
+				if(isPassAbleTile(tile, direction)){
+					Tile neighbor = gameManager.getTile(tile, direction);
+					if( neighbor.compareTo(myAnt) == 0 ){
+						takeAStep(myAnt, tile);
+						//gameManager.setAnt2TargetMap(tile, target);
+						return true;
+					}
+						
+					if(!visitedTile.contains(neighbor)){
+						qe.add(neighbor);
+						visitedTile.add(neighbor);
+					}
+				}
+			}
+			searchCount++;
+		}
+		return false;
+	}
+	
+	public boolean assignAnt2TargetByLimit(Tile myAnt, Tile target, int limit){
+		Tile tile = null;
+		int searchCount = 0;
+		int searchDepth = limit;
 		/*
 		 * BFS here!
 		 */
@@ -194,7 +230,7 @@ public class PathFinder {
 		//BFS to find invisible tile
 		Tile tile = null;
 		int searchCount = 0;
-		int searchDepth = 500;
+		int searchDepth = SEARCH_LIMIT;
 		/*
 		 * BFS here!
 		 */

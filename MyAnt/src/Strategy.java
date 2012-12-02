@@ -9,13 +9,17 @@ public class Strategy {
 	private Ants gameManager;
 	private final PathFinder pathFinder = new PathFinder();
 	private final Set<Aim> visitedDirection = new HashSet<Aim>();	//for clockwise move order from my hill
-	private final AntLogger logger;
+	//private final AntLogger logger;
 	private int turn = 0;
 	//private final Map<Tile, Tile> foodMap = new HashMap<Tile, Tile>(); //<food, ant>
 
-	public Strategy(MyBot myBott, AntLogger antlog){
+	/*public Strategy(MyBot myBott, AntLogger antlog){
 		this.myBot = myBott;
 		logger = antlog;
+	}*/
+	
+	public Strategy(MyBot myBott){
+		this.myBot = myBott;
 	}
 	
 	/*
@@ -44,6 +48,7 @@ public class Strategy {
 	
 	public void doMainStrategy(){
 		updateGameState();
+		razeEnemyHill();
 		findFood();
 		explore();
 		
@@ -53,27 +58,38 @@ public class Strategy {
 		//logger.debug("+++++++++++++++++ number of ants for unseen tile = " + gameManager.getAnt2Targets().size() );
 	}	
 	
+	private void razeEnemyHill() {
+		for(Tile enemyHill : gameManager.getEnemyHills()){
+			pathFinder.assignTarget2Ant(enemyHill);
+		}
+	}	
+
 	private void explore() {
-		for (Tile myAnt : gameManager.getMyAnts()) {	
-			for(Tile myHill : gameManager.getMyHills() ){
-				if(myAnt.compareTo(myHill) == 0){	//ant is on my hill
+		for ( Tile myAnt : gameManager.getMyAnts() ) {	
+			for( Tile myHill : gameManager.getMyHills() ){
+				if( myAnt.compareTo(myHill) == 0 ){	//ant is on my hill
 					simpleMove(myAnt);
 				}else{
 					if( !eachAntExplore(myAnt) )
-						followAntNearBy(myAnt);
+						followAntNearBy(myAnt);			//nothing new ahead then go join a friend near by	
 				}
 			}
-        }
+		}
 	}
 
 	private void followAntNearBy(Tile myAnt) {
 		int mininumDistance = 20;
+		
 		for(Tile friend : gameManager.getMyAnts()){
-			if( gameManager.getDistance(myAnt, friend) > mininumDistance ){
-				if( pathFinder.assignAnt2TargetNoLimit(myAnt, friend) == false )
-					logger.debug("*********** Can't find any friends **********");
-				break;
+			if( gameManager.getDistance(myAnt, friend) < mininumDistance ){
+				pathFinder.takeAStep(myAnt, friend);
+				return;
 			}
+		}
+		
+		for(Tile friend : gameManager.getMyAnts()){
+			pathFinder.takeAStep(myAnt, friend);
+			return;
 		}
 	}
 
@@ -89,11 +105,14 @@ public class Strategy {
 	}
 
 	private void findFood(){
-		if(gameManager.getFoodTiles().isEmpty())
-			logger.debug("turn="+ turn +", No food at all");
+		if(gameManager.getFoodTiles().isEmpty()){
+			explore();			
+			//logger.debug("turn="+ turn +", No food at all");
+		}
+			
 		for(Tile food : gameManager.getFoodTiles())
 			//pathFinder.assignAnt2Food(food);
-			pathFinder.assignAnt2Target(food);
+			pathFinder.assignTarget2Ant(food);
 	}
 
 }
