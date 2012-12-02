@@ -8,12 +8,12 @@ import java.util.Date;
  */
 public class MyBot extends Bot {
     private Strategy strategy;	//my stategy
-    private static AntLogger logger;
+    //private static AntLogger logger;
 	
     public MyBot(){
-    	logger = new AntLogger();
-    	strategy = new Strategy(this, logger);
-    	//strategy = new Strategy(this);
+    	//logger = new AntLogger();
+    	//strategy = new Strategy(this, logger);
+    	strategy = new Strategy(this);
     	
     }
 	/**

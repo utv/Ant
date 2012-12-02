@@ -537,6 +537,10 @@ public class Ants {
     
     //nextTurnAnts
     
+    public Set<Tile> getNextTurnAnts(){
+    	return nextTurnAnts;
+    }
+    
     public boolean isNextTurnAnts(Tile myAnt){
     	return nextTurnAnts.contains(myAnt);
     }

@@ -9,14 +9,18 @@ public class Strategy {
 	private Ants gameManager;
 	private final PathFinder pathFinder = new PathFinder();
 	private final Set<Aim> visitedDirection = new HashSet<Aim>();	//for clockwise move order from my hill
-	private final AntLogger logger;
-	private int turn = 0;
+	//private final AntLogger logger;
+	//private int turn = 0;
 	//private final Map<Tile, Tile> foodMap = new HashMap<Tile, Tile>(); //<food, ant>
 	
-	public Strategy(MyBot myBott, AntLogger antlog){
+	/*public Strategy(MyBot myBott, AntLogger antlog){
 		this.myBot = myBott;
 		logger = antlog;
-	}
+	}*/
+	
+	public Strategy(MyBot myBott){
+		this.myBot = myBott;
+	} 
 	
 	/*
 	 * Game states get updated every turns by starter pack.
@@ -48,7 +52,7 @@ public class Strategy {
 		findFood();
 		explore();
 		
-		turn++;
+		//turn++;
 		//logger.debug("----------------------- turn " + turn + "");
 		//logger.debug("+++++++++++++++++ number of ants = " + gameManager.getMyAnts().size() );
 		//logger.debug("+++++++++++++++++ number of ants for unseen tile = " + gameManager.getAnt2Targets().size() );
@@ -95,9 +99,8 @@ public class Strategy {
 		for(Aim direction : Aim.values()){
 			Tile lastSeen = gameManager.getTile(myAnt, direction);
 			if( gameManager.getLastSeenAnts().contains( lastSeen ) ){
-				pathFinder.exploreByLastSeenTile(myAnt, lastSeen);
-					return true;
-				//break;
+				pathFinder.exploreByLastSeenTile(myAnt, lastSeen);	
+				return true;
 			}
 		}
 		return false;
