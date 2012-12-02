@@ -1,6 +1,8 @@
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Set;
 
 
@@ -49,14 +51,18 @@ public class Strategy {
 	public void doMainStrategy(){
 		updateGameState();
 		razeEnemyHill();
+		doCombat();
 		findFood();
 		explore();
 		
-		//turn++;
-		//logger.debug("----------------------- turn " + turn + "");
-		//logger.debug("+++++++++++++++++ number of ants = " + gameManager.getMyAnts().size() );
-		//logger.debug("+++++++++++++++++ number of ants for unseen tile = " + gameManager.getAnt2Targets().size() );
 	}	
+	
+	private void doCombat() {
+		for(Tile enemyAnt : gameManager.getEnemyAnts() ){
+			pathFinder.combatOnEnemy( enemyAnt );
+		}
+	}
+
 	
 	private void razeEnemyHill() {
 		for(Tile enemyHill : gameManager.getEnemyHills()){
@@ -72,7 +78,7 @@ public class Strategy {
 						simpleMove(myAnt);
 					}else{
 						if( !eachAntExplore(myAnt) )
-							followAntNearBy(myAnt);			//nothing new ahead then go join a friend near by	
+							followAntNearBy(myAnt);	//nothing new ahead then go join a friend near by	
 					}
 				}
 			}
@@ -99,8 +105,10 @@ public class Strategy {
 		for(Aim direction : Aim.values()){
 			Tile lastSeen = gameManager.getTile(myAnt, direction);
 			if( gameManager.getLastSeenAnts().contains( lastSeen ) ){
-				pathFinder.exploreByLastSeenTile(myAnt, lastSeen);	
-				return true;
+				if( pathFinder.exploreByLastSeenTile(myAnt, lastSeen) ){
+					return true;
+				}else
+					pathFinder.getAwayFromTile(myAnt, lastSeen);
 			}
 		}
 		return false;

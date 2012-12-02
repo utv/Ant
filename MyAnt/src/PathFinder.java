@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
+import java.util.Set;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
@@ -13,6 +14,9 @@ public class PathFinder {
 
 	protected Ants gameManager;
 	private final int SEARCH_LIMIT = 1000;
+	private final Set<Tile> myAnts4Combat = new HashSet<Tile>();
+	private final Set<Tile> enemyAnts4Combat = new HashSet<Tile>();
+	private final Set<Aim> direction2Escape = new HashSet<Aim>();
 	
 	public PathFinder(){
 		
@@ -66,17 +70,21 @@ public class PathFinder {
 		return null;	//can't find any ants for this food
 	}
 	
-	private boolean isPassAbleTile(Tile tile, Aim direction) {
+	public boolean isPassAbleTile(Tile tile, Aim direction) {
 		return ( gameManager.getIlk(tile, direction).isPassable() 
 				&& gameManager.isNotNextTurnAnts( gameManager.getTile(tile, direction) ) 
 				);
 	}
 
-	private boolean isMyAntTile(Tile tile) {
+	public boolean isMyAntTile(Tile tile) {
 		return gameManager.map[tile.getRow()][tile.getCol()].equals(Ilk.MY_ANT);
 	}
 	
-	private boolean isVisibleTile(Tile tile){
+	public boolean isEnemyAntTile(Tile tile) {
+		return gameManager.map[tile.getRow()][tile.getCol()].equals(Ilk.ENEMY_ANT);
+	}
+	
+	public boolean isVisibleTile(Tile tile){
 		return gameManager.isVisible(tile);
 	}
 	
@@ -338,7 +346,7 @@ public class PathFinder {
 		return false;
 	}
 
-	private boolean isOnUnseenPath(Tile unSeen, Tile myAnt, Tile lastSeen) {
+	public boolean isOnUnseenPath(Tile unSeen, Tile myAnt, Tile lastSeen) {
 		if( myAnt.getRow() == lastSeen.getRow() ){
 			if( myAnt.getCol() < lastSeen.getCol() && unSeen.getCol() < lastSeen.getCol() )
 				return true;
@@ -386,6 +394,74 @@ public class PathFinder {
 			searchCount++;
 		}
 		return false;
+	}
+
+	public void combatOnEnemy(Tile enemyAnt) {
+		myAnts4Combat.clear();
+		enemyAnts4Combat.clear();
+		
+		Tile tile = null;
+		int searchCount = 0;
+		int searchDepth = 10;
+		
+		/*
+		 * BFS here!
+		 */
+		Queue<Tile> qe = new LinkedList<Tile>();
+		HashSet<Tile> visitedTile = new HashSet<Tile>();
+		qe.add(enemyAnt);
+		
+		while(!qe.isEmpty()&& searchCount < searchDepth ){		
+		//while(!qe.isEmpty() ){	
+			tile = qe.remove();
+			
+			for(Aim direction : Aim.values()){
+				if(isPassAbleTile(tile, direction)){
+					Tile neighbor = gameManager.getTile(tile, direction);
+					if( isMyAntTile(neighbor) ){
+						myAnts4Combat.add(neighbor);
+					}
+					if( isEnemyAntTile(neighbor) ){
+						enemyAnts4Combat.add(neighbor);
+					}
+					if(!visitedTile.contains(neighbor)){
+						qe.add(neighbor);
+						visitedTile.add(neighbor);
+					}
+				}
+			}
+			searchCount++;
+		}
+		
+		if( myAnts4Combat.size() >= enemyAnts4Combat.size() ){
+			for( Tile myAnt :  myAnts4Combat )
+				assignAnt2Target(myAnt, enemyAnt);
+		}else{
+			//escape
+			for( Tile myAnt :  myAnts4Combat )
+				getAwayFromTile(myAnt, enemyAnt);
+		}
+		
+	}
+
+	public void getAwayFromTile(Tile myAnt, Tile enemyAnt) {
+		direction2Escape.clear();
+		
+		if( myAnt.getRow() > enemyAnt.getRow() )
+			direction2Escape.add(Aim.SOUTH);
+		if( myAnt.getRow() < enemyAnt.getRow() )
+			direction2Escape.add(Aim.NORTH);
+		if( myAnt.getCol() > enemyAnt.getCol() )
+			direction2Escape.add(Aim.EAST);
+		if( myAnt.getCol() < enemyAnt.getCol() )
+			direction2Escape.add(Aim.WEST);
+		
+		for( Aim direction :  direction2Escape ){
+			if(gameManager.getIlk(myAnt, direction).isPassable() && 
+				!gameManager.getNextTurnAnts().contains( gameManager.getIlk(myAnt, direction) )
+					)
+				gameManager.issueOrder(myAnt, direction);
+		}
 	}
 	
 	
