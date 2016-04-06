@@ -92,18 +92,10 @@ public class PathFinder {
      * Use BFS to move a closest ant from the target one step towards the target, then return it.
      */
     public Tile assignTarget2Ant(Tile target) {
-
-		/*old version
-         * 	Tile ant = getAnt4Target(target);
-			takeAStep(ant, target);
-		*/
-
         Tile tile = null;
         int searchCount = 0;
         int searchDepth = SEARCH_LIMIT;
-		/*
-		 * BFS here!
-		 */
+		// BFS
         Queue<Tile> qe = new LinkedList<Tile>();
         HashSet<Tile> visitedTile = new HashSet<Tile>();
         qe.add(target);
@@ -134,9 +126,7 @@ public class PathFinder {
         Tile tile = null;
         int searchCount = 0;
         int searchDepth = SEARCH_LIMIT;
-		/*
-		 * BFS here!
-		 */
+		// BFS
         Queue<Tile> qe = new LinkedList<Tile>();
         HashSet<Tile> visitedTile = new HashSet<Tile>();
         qe.add(target);
@@ -166,9 +156,7 @@ public class PathFinder {
         Tile tile = null;
         int searchCount = 0;
         int searchDepth = SEARCH_LIMIT;
-		/*
-		 * BFS here!
-		 */
+        // BFS
         Queue<Tile> qe = new LinkedList<Tile>();
         HashSet<Tile> visitedTile = new HashSet<Tile>();
         qe.add(target);
@@ -201,9 +189,7 @@ public class PathFinder {
         Tile tile = null;
         int searchCount = 0;
         int searchDepth = limit;
-		/*
-		 * BFS here!
-		 */
+        // BFS
         Queue<Tile> qe = new LinkedList<Tile>();
         HashSet<Tile> visitedTile = new HashSet<Tile>();
         qe.add(target);
@@ -233,11 +219,8 @@ public class PathFinder {
 
     public boolean assignAnt2TargetNoLimit(Tile myAnt, Tile target) {
         Tile tile = null;
-		/*int searchCount = 0;
-		int searchDepth = 500;*/
-		/*
-		 * BFS here!
-		 */
+
+        // BFS
         Queue<Tile> qe = new LinkedList<Tile>();
         HashSet<Tile> visitedTile = new HashSet<Tile>();
         qe.add(target);
@@ -270,9 +253,7 @@ public class PathFinder {
         int searchCount = 0;
         int searchDepth = 1000;
         int maxLastSeenTileCount = 800;
-		/*
-		 * BFS here!
-		 */
+        // BFS
         Queue<Tile> qe = new LinkedList<Tile>();
         HashSet<Tile> visitedTile = new HashSet<Tile>();
         qe.add(myAnt);
@@ -309,9 +290,7 @@ public class PathFinder {
         int searchCount = 0;
         int searchDepth = 1000;
         int maxLastSeenTileCount = 800;
-		/*
-		 * BFS here!
-		 */
+        // BFS
         Queue<Tile> qe = new LinkedList<Tile>();
         HashSet<Tile> visitedTile = new HashSet<Tile>();
         qe.add(myAnt);
@@ -363,9 +342,7 @@ public class PathFinder {
         Tile tile = null;
         int searchCount = 0;
         int searchDepth = SEARCH_LIMIT;
-		/*
-		 * BFS here!
-		 */
+        // BFS
         Queue<Tile> qe = new LinkedList<Tile>();
         HashSet<Tile> visitedTile = new HashSet<Tile>();
         qe.add(myAnt);
@@ -398,10 +375,8 @@ public class PathFinder {
         Tile tile = null;
         int searchCount = 0;
         int searchDepth = 10;
-		
-		/*
-		 * BFS here!
-		 */
+
+        // BFS
         Queue<Tile> qe = new LinkedList<Tile>();
         HashSet<Tile> visitedTile = new HashSet<Tile>();
         qe.add(enemyAnt);
